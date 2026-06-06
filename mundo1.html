@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>MatriVerse · Mundo 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="mundo1.css"/>
+</head>
+<body>
+
+  <!-- QUIZ -->
+  <div id="quizView">
+    <header class="header">
+      <div class="logo">
+        <div class="planet"></div>
+        <h1>MATRI<span>VERSE</span></h1>
+      </div>
+      <div class="stars">⭐ <span id="starDisplay">0</span>/5</div>
+    </header>
+
+    <main class="container">
+      <div class="question-number">Pergunta <span id="qNum">1</span>/5</div>
+      <h2 id="questionText"></h2>
+      <div id="optionsContainer"></div>
+    </main>
+  </div>
+
+  <!-- TELA FINAL -->
+  <div id="finishView" class="finish-container" style="display:none;">
+    <div style="font-size:4rem;">🏆</div>
+    <h1 id="finishTitle"></h1>
+    <p id="finishMsg"></p>
+    <a href="index.html">← Voltar ao Hub</a>
+  </div>
+
+<script>
+const questions = [
+  {
+    question: "O que é uma matriz?",
+    options: [
+      "Uma operação matemática",
+      "Uma tabela organizada em linhas e colunas",
+      "Um gráfico cartesiano",
+      "Um cálculo de divisão"
+    ],
+    correct: 1
+  },
+  {
+    question: "As linhas de uma matriz são organizadas:",
+    options: [
+      "Horizontalmente",
+      "Verticalmente",
+      "Diagonalmente",
+      "Circularmente"
+    ],
+    correct: 0
+  },
+  {
+    question: "O elemento A(2,3) representa:",
+    options: [
+      "Linha 2 e coluna 3",
+      "Linha 3 e coluna 2",
+      "Coluna 2 e linha 1",
+      "A diagonal da matriz"
+    ],
+    correct: 0
+  },
+  {
+    question: "Uma matriz quadrada possui:",
+    options: [
+      "Mais linhas que colunas",
+      "Mais colunas que linhas",
+      "Mesmo número de linhas e colunas",
+      "Apenas uma linha"
+    ],
+    correct: 2
+  },
+  {
+    question: "Dada a matriz:\n[ 2  3 ]\n[ 1  4 ]\nQual é o resultado da soma dos elementos da primeira linha?",
+    options: ["5", "6", "7", "8"],
+    correct: 0
+  }
+];
+
+let current = 0;
+let stars = 0;
+let shuffled = [...questions];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function loadQuestion() {
+  if (current >= 5) { showFinish(); return; }
+
+  const q = shuffled[current];
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('questionText').textContent = q.question;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => handleAnswer(idx, q.correct);
+    container.appendChild(btn);
+  });
+}
+
+function handleAnswer(selected, correct) {
+  if (selected === correct) {
+    stars++;
+    current++;
+    loadQuestion();
+  } else {
+    // Embaralha e tenta de novo
+    shuffled = shuffle([...questions]);
+    current = 0;
+    loadQuestion();
+  }
+}
+
+function showFinish() {
+  document.getElementById('quizView').style.display = 'none';
+  const finish = document.getElementById('finishView');
+  finish.style.display = 'flex';
+  document.getElementById('finishTitle').textContent = `Você conquistou ${stars}/5 estrelas!`;
+  document.getElementById('finishMsg').textContent =
+    stars === 5 ? 'Perfeito! Você dominou a Fundação das Matrizes!' :
+    stars >= 3  ? 'Bom trabalho! Continue praticando.' :
+                  'Continue tentando, você chega lá!';
+}
+
+loadQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>MATRIVERSE · Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="cadastro.css"/>
+</head>
+<body>
+  <div class="space-bg">
+    <div class="stars s1"></div><div class="stars s2"></div><div class="stars s3"></div>
+    <div class="nebula nb1"></div><div class="nebula nb2"></div>
+  </div>
+
+  <div class="page-wrap">
+    <!-- Logo -->
+    <a href="landing.html" class="logo">
+      <div class="planet-sm"><div class="pc"></div><div class="ring"></div></div>
+      <span class="logo-text">MATRI<span>VERSE</span></span>
+    </a>
+
+    <div class="card">
+      <h1 class="card-title">Criar Conta</h1>
+      <p class="card-sub">Escolha seu perfil e comece sua jornada.</p>
+
+      <!-- Seletor de perfil -->
+      <div class="profile-grid">
+        <label class="profile-opt">
+          <input type="radio" name="perfil" value="aluno" checked/>
+          <div class="profile-box">
+            <span class="p-ico">🎓</span>
+            <b>Estudante</b>
+            <small>Ensino Médio</small>
+          </div>
+        </label>
+        <label class="profile-opt">
+          <input type="radio" name="perfil" value="docente"/>
+          <div class="profile-box">
+            <span class="p-ico">👨‍🏫</span>
+            <b>Docente</b>
+            <small>Professor(a)</small>
+          </div>
+        </label>
+      </div>
+
+      <div id="erro" class="msg-erro" style="display:none"></div>
+      <div id="ok"   class="msg-ok"   style="display:none"></div>
+
+      <form id="formCadastro">
+        <label class="field">
+          <span>Nome completo</span>
+          <input type="text" id="nome" placeholder="Seu nome" required/>
+        </label>
+        <label class="field">
+          <span>E-mail</span>
+          <input type="email" id="email" placeholder="voce@galaxia.com" required/>
+        </label>
+        <label class="field">
+          <span>Senha <small>(mín. 6 caracteres)</small></span>
+          <input type="password" id="senha" placeholder="••••••••" required/>
+        </label>
+        <label class="field">
+          <span>Confirmar senha</span>
+          <input type="password" id="senha2" placeholder="••••••••" required/>
+        </label>
+        <button type="submit" class="btn-neon" id="btnCadastrar">🚀 Criar Conta</button>
+      </form>
+
+      <p class="link-login">Já tem conta? <a href="login.html">Entrar</a></p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    const form  = document.getElementById('formCadastro');
+    const elErr = document.getElementById('erro');
+    const elOk  = document.getElementById('ok');
+    const btn   = document.getElementById('btnCadastrar');
+
+    function setErro(msg) { elErr.textContent = msg; elErr.style.display = msg ? 'block' : 'none'; elOk.style.display='none'; }
+    function setOk(msg)   { elOk.textContent  = msg; elOk.style.display  = msg ? 'block' : 'none'; elErr.style.display='none'; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setErro('');
+      const nome   = document.getElementById('nome').value.trim();
+      const email  = document.getElementById('email').value.trim();
+      const senha  = document.getElementById('senha').value;
+      const senha2 = document.getElementById('senha2').value;
+      const perfil = document.querySelector('input[name="perfil"]:checked').value;
+
+      if (senha !== senha2) { setErro('As senhas não coincidem.'); return; }
+
+      btn.textContent = 'Criando conta...';
+      btn.disabled = true;
+      const res = await API.cadastro(nome, email, senha, perfil);
+      btn.textContent = '🚀 Criar Conta';
+      btn.disabled = false;
+
+      if (res.erro) { setErro(res.erro); return; }
+
+      sessionStorage.setItem('mv_usuario', JSON.stringify(res.usuario));
+      setOk('Conta criada! Redirecionando...');
+      setTimeout(() => {
+        window.location.href = res.usuario.perfil === 'docente' ? 'docente.html' : 'index.html';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

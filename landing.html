@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>MATRIVERSE · Jogo de Desafios sobre Matrizes Lineares</title>
+  <meta name="description" content="MATRIVERSE é um jogo futurista para estudantes do ensino médio testarem seus conhecimentos em matrizes lineares através de desafios gamificados." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <!-- ============ FUNDO ESPACIAL ============ -->
+  <div class="space-bg">
+    <div class="stars layer1"></div>
+    <div class="stars layer2"></div>
+    <div class="stars layer3"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div id="particles"></div>
+  </div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar">
+    <a href="#" class="logo">
+      <div class="planet">
+        <div class="planet-core"></div>
+        <div class="ring"></div>
+      </div>
+      <span class="logo-text">MATRI<span>VERSE</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#hero" class="nav-link active">Início</a>
+      <a href="#mundos" class="nav-link">Mundos</a>
+      <a href="#ranking" class="nav-link">Ranking</a>
+      <a href="#desafios" class="nav-link">Desafios</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openLogin()">Login</button>
+      <a href="index.html" class="btn-neon small">Jogar Agora</a>
+    </div>
+
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <div class="badge-tag">
+        <span class="pulse-dot"></span>
+        JOGO EDUCACIONAL · ENSINO MÉDIO
+      </div>
+
+      <h1 class="hero-title">
+        Teste seus conhecimentos em
+        <span class="gradient-text">MATRIZES LINEARES</span>
+      </h1>
+
+      <p class="hero-sub">
+        Um jogo futurista para estudantes do ensino médio enfrentarem
+        desafios matemáticos e provarem suas habilidades.
+      </p>
+
+      <p class="hero-extra">
+        No MATRIVERSE, os jogadores avançam por mundos espaciais
+        resolvendo perguntas e desafios sobre matrizes lineares.
+      </p>
+
+      <ul class="features-list">
+        <li>✅ Perguntas Interativas</li>
+        <li>✅ Desafios Matemáticos</li>
+        <li>✅ Ensino Médio</li>
+        <li>✅ Sistema de Estrelas</li>
+        <li>✅ Mundos Gamificados</li>
+      </ul>
+
+      <div class="hero-cta">
+        <a href="index.html" class="btn-neon big">🚀 JOGAR AGORA</a>
+        <a href="#mundos" class="btn-outline big">EXPLORAR MUNDOS</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hud">
+        <div class="orbit"><div class="orbit-dot"></div></div>
+        <div class="orbit orbit-2"><div class="orbit-dot"></div></div>
+        <div class="hero-planet">
+          <div class="hero-planet-ring"></div>
+        </div>
+        <div class="holo-matrix m1">
+          <div class="bracket">[</div>
+          <div class="mat-grid">
+            <span>1</span><span>2</span>
+            <span>3</span><span>4</span>
+          </div>
+          <div class="bracket">]</div>
+        </div>
+        <div class="holo-matrix m2">
+          <div class="bracket">[</div>
+          <div class="mat-grid mat-3">
+            <span>2</span><span>0</span><span>1</span>
+            <span>1</span><span>3</span><span>2</span>
+          </div>
+          <div class="bracket">]</div>
+        </div>
+        <div class="holo-matrix m3">
+          <div class="bracket">[</div>
+          <div class="mat-grid">
+            <span>5</span><span>7</span>
+            <span>2</span><span>9</span>
+          </div>
+          <div class="bracket">]</div>
+        </div>
+        <span class="float-num n1">+1</span>
+        <span class="float-num n2">×</span>
+        <span class="float-num n3">A·B</span>
+        <span class="float-num n4">det</span>
+        <div class="hud-card hud-top">
+          <span class="hud-label">DESAFIO</span>
+          <span class="hud-val">M2 · 04</span>
+        </div>
+        <div class="hud-card hud-bot">
+          <span class="hud-label">ESTRELAS</span>
+          <span class="hud-val">⭐ 28</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
+  <section class="section" id="como">
+    <div class="section-header">
+      <span class="kicker">⚡ JORNADA GAMER</span>
+      <h2 class="section-title">Como funciona o <span class="gradient-text">MATRIVERSE</span>?</h2>
+      <p class="section-sub">5 passos para dominar o universo das matrizes lineares.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-num">1</div>
+        <h3>Escolha um mundo</h3>
+        <p>Selecione entre planetas temáticos de matrizes.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">2</div>
+        <h3>Responda perguntas</h3>
+        <p>Resolva desafios reais sobre matrizes lineares.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">3</div>
+        <h3>Ganhe estrelas</h3>
+        <p>Cada acerto vira uma estrela conquistada.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">4</div>
+        <h3>Desbloqueie desafios</h3>
+        <p>Avance para mundos mais difíceis e raros.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">5</div>
+        <h3>Suba no ranking</h3>
+        <p>Compita com outros jogadores da galáxia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DESAFIOS / MUNDOS ============ -->
+  <section class="section" id="mundos">
+    <div class="section-header">
+      <span class="kicker">🪐 8 MUNDOS</span>
+      <h2 class="section-title">Tipos de <span class="gradient-text">Desafios</span></h2>
+      <p class="section-sub">Cada mundo testa uma habilidade matemática diferente.</p>
+    </div>
+    <div class="worlds-grid" id="desafios-grid">
+      <article class="world-card">
+        <div class="world-icon">🌱</div>
+        <h3>Fundação das Matrizes</h3>
+        <p>Aprenda o conceito básico do universo matricial.</p>
+        <span class="world-tag easy">Fácil</span>
+      </article>
+      <article class="world-card featured">
+        <div class="world-icon">➕</div>
+        <h3>Operações Básicas</h3>
+        <p>Soma, subtração e multiplicação por escalar.</p>
+        <span class="world-tag easy">Fácil</span>
+        <a href="index.html" class="world-play">Jogar →</a>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">⬛</div>
+        <h3>Matrizes Quadradas</h3>
+        <p>Diagonais, identidade e propriedades especiais.</p>
+        <span class="world-tag mid">Médio</span>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">🔄</div>
+        <h3>Matriz Transposta</h3>
+        <p>Inverta linhas e colunas como um pro.</p>
+        <span class="world-tag mid">Médio</span>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">✖️</div>
+        <h3>Multiplicação</h3>
+        <p>Domine o produto entre matrizes.</p>
+        <span class="world-tag hard">Difícil</span>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">🧮</div>
+        <h3>Determinantes</h3>
+        <p>Calcule determinantes de 2x2 e 3x3.</p>
+        <span class="world-tag hard">Difícil</span>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">📐</div>
+        <h3>Sistemas Lineares</h3>
+        <p>Resolva sistemas usando matrizes.</p>
+        <span class="world-tag hard">Difícil</span>
+      </article>
+      <article class="world-card">
+        <div class="world-icon">🏆</div>
+        <h3>Desafios Avançados</h3>
+        <p>Apenas para os verdadeiros mestres.</p>
+        <span class="world-tag epic">Épico</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ BENEFÍCIOS ============ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="kicker">💎 BENEFÍCIOS</span>
+      <h2 class="section-title">Por que jogar o <span class="gradient-text">MATRIVERSE</span>?</h2>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="b-icon">🎮</div>
+        <h3>Experiência Gamificada</h3>
+        <p>Transforme exercícios em desafios espaciais.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">⭐</div>
+        <h3>Sistema de Progressão</h3>
+        <p>Ganhe estrelas e avance pelos mundos.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">🧠</div>
+        <h3>Teste seus Conhecimentos</h3>
+        <p>Resolva perguntas reais sobre matrizes lineares.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">🏆</div>
+        <h3>Ranking Competitivo</h3>
+        <p>Compare seu desempenho com outros jogadores.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">🚀</div>
+        <h3>Plataforma Futurista</h3>
+        <p>Experiência moderna inspirada em jogos AAA.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RANKING ============ -->
+  <section class="section" id="ranking">
+    <div class="section-header">
+      <span class="kicker">🏆 TOP JOGADORES</span>
+      <h2 class="section-title">Hall da <span class="gradient-text">Galáxia</span></h2>
+      <p class="section-sub">Os maiores mestres das matrizes lineares.</p>
+    </div>
+    <div class="ranking-panel">
+      <div class="rank-head">
+        <span>#</span><span>Jogador</span><span>Nível</span><span>Mundo</span><span>Estrelas</span>
+      </div>
+      <div class="rank-row gold">
+        <span class="rank-pos">🥇</span>
+        <span class="rank-name">NovaStar_42</span>
+        <span class="rank-lvl">Lv 28</span>
+        <span class="rank-world">Determinantes</span>
+        <span class="rank-stars">⭐ 248</span>
+      </div>
+      <div class="rank-row silver">
+        <span class="rank-pos">🥈</span>
+        <span class="rank-name">QuantumGirl</span>
+        <span class="rank-lvl">Lv 25</span>
+        <span class="rank-world">Multiplicação</span>
+        <span class="rank-stars">⭐ 221</span>
+      </div>
+      <div class="rank-row bronze">
+        <span class="rank-pos">🥉</span>
+        <span class="rank-name">MatrixKing</span>
+        <span class="rank-lvl">Lv 22</span>
+        <span class="rank-world">Transposta</span>
+        <span class="rank-stars">⭐ 198</span>
+      </div>
+      <div class="rank-row">
+        <span class="rank-pos">4</span>
+        <span class="rank-name">PixelMath</span>
+        <span class="rank-lvl">Lv 19</span>
+        <span class="rank-world">Quadradas</span>
+        <span class="rank-stars">⭐ 175</span>
+      </div>
+      <div class="rank-row">
+        <span class="rank-pos">5</span>
+        <span class="rank-name">Cyberlinear</span>
+        <span class="rank-lvl">Lv 17</span>
+        <span class="rank-world">Operações</span>
+        <span class="rank-stars">⭐ 162</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOCENTES ============ -->
+  <section class="section">
+    <div class="docente-panel">
+      <div class="docente-left">
+        <span class="kicker">👨‍🏫 PARA DOCENTES</span>
+        <h2 class="section-title">Acompanhe o <span class="gradient-text">desempenho</span> dos seus alunos</h2>
+        <p>Painel holográfico completo para professores monitorarem o progresso, acertos e evolução de cada estudante em tempo real.</p>
+        <ul class="docente-list">
+          <li>📊 Progresso por aluno</li>
+          <li>✅ Quantidade de acertos</li>
+          <li>⭐ Estrelas conquistadas</li>
+          <li>🎯 Desempenho por desafio</li>
+        </ul>
+        <button class="btn-neon">Acessar Painel Docente</button>
+      </div>
+      <div class="docente-right">
+        <div class="dash-mock">
+          <div class="dash-head">
+            <span>📡 TURMA · 3º ANO B</span>
+            <span class="live">● LIVE</span>
+          </div>
+          <div class="dash-stats">
+            <div class="dash-stat"><b>32</b><small>Alunos</small></div>
+            <div class="dash-stat"><b>87%</b><small>Acertos</small></div>
+            <div class="dash-stat"><b>1.2k</b><small>⭐</small></div>
+          </div>
+          <div class="dash-bars">
+            <div class="bar"><span style="height:60%"></span><small>M1</small></div>
+            <div class="bar"><span style="height:85%"></span><small>M2</small></div>
+            <div class="bar"><span style="height:45%"></span><small>M3</small></div>
+            <div class="bar"><span style="height:72%"></span><small>M4</small></div>
+            <div class="bar"><span style="height:90%"></span><small>M5</small></div>
+            <div class="bar"><span style="height:35%"></span><small>M6</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="section cta-final">
+    <h2 class="section-title">Pronto para entrar no <span class="gradient-text">MATRIVERSE</span>?</h2>
+    <p class="section-sub">Junte-se a milhares de estudantes do ensino médio testando suas habilidades em matrizes lineares.</p>
+    <a href="index.html" class="btn-neon big">🚀 COMEÇAR MISSÃO</a>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <div class="planet small"><div class="planet-core"></div><div class="ring"></div></div>
+      <span class="logo-text">MATRI<span>VERSE</span></span>
+    </div>
+    <p>© 2026 MATRIVERSE · Jogo educacional de matrizes lineares para o ensino médio.</p>
+  </footer>
+
+  <!-- ============ MODAL LOGIN ============ -->
+  <div class="modal-bg hidden" id="loginModal" onclick="closeLoginBg(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeLogin()">×</button>
+      <div class="modal-head">
+        <div class="planet small"><div class="planet-core"></div><div class="ring"></div></div>
+        <h2>Entrar no <span class="gradient-text">MATRIVERSE</span></h2>
+        <p>Escolha seu perfil e comece sua jornada.</p>
+      </div>
+      <div class="profile-choice">
+        <label class="profile-opt">
+          <input type="radio" name="profile" value="aluno" checked />
+          <div class="profile-box">
+            <span class="p-icon">🎓</span>
+            <b>Estudante</b>
+            <small>Ensino Médio</small>
+          </div>
+        </label>
+        <label class="profile-opt">
+          <input type="radio" name="profile" value="docente" />
+          <div class="profile-box">
+            <span class="p-icon">👨‍🏫</span>
+            <b>Docente</b>
+            <small>Professor(a)</small>
+          </div>
+        </label>
+      </div>
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <label>Email
+          <input type="email" placeholder="voce@galaxia.com" required />
+        </label>
+        <label>Senha
+          <input type="password" placeholder="••••••••" required />
+        </label>
+        <div id="loginErro" class="login-erro" style="display:none"></div>
+        <button type="submit" class="btn-neon big full">Entrar no MATRIVERSE</button>
+        <p style="text-align:center;margin-top:14px;color:#9aa3d4;font-size:.85rem">Não tem conta? <a href="cadastro.html" style="color:#a78bfa;font-weight:800">Cadastrar</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="landing.js"></script>
+</body>
+</html>

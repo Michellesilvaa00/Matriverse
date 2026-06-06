@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MatriVerse – Hub de Mundos</title>
+
+  <!-- Google Fonts: Nunito (corpo) + Orbitron (logo accent) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <!-- Folha de estilos principal -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════
+       NAVBAR  – barra de topo
+  ════════════════════════════════════════════ -->
+  <header class="navbar">
+    <!-- Logo -->
+    <a href="index.html" class="logo" aria-label="Página inicial MatriVerse">
+      <!-- Ícone de planeta SVG inline (substitui imagem externa) -->
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="20" cy="20" rx="11" ry="11" fill="#9B5CF6"/>
+        <ellipse cx="20" cy="20" rx="19" ry="7" stroke="#C4B5FD" stroke-width="2.5" fill="none" transform="rotate(-20 20 20)"/>
+        <circle cx="14" cy="14" r="3" fill="#C4B5FD" opacity=".6"/>
+      </svg>
+      <span class="logo-text">MATRI<span class="logo-accent">VERSE</span></span>
+    </a>
+
+    <!-- Pontuação + usuário + botão Sair -->
+    <nav class="navbar-right">
+      <!-- Estrelas acumuladas -->
+      <div class="score-badge" aria-label="120 estrelas acumuladas">
+        <svg class="icon-star" viewBox="0 0 24 24" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span class="score-value">120</span>
+      </div>
+
+      <!-- Avatar + saudação -->
+      <div class="user-info" aria-label="Usuário: Agente">
+        <svg class="icon-user" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" stroke-width="2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+        </svg>
+        <span>Olá, Agente!</span>
+      </div>
+
+      <!-- Botão Sair -->
+      <button class="btn-sair" onclick="handleSair()" aria-label="Sair da conta">Sair</button>
+    </nav>
+  </header>
+
+
+  <!-- ════════════════════════════════════════════
+       HERO BANNER  – título e subtítulo
+  ════════════════════════════════════════════ -->
+  <section class="hero" aria-label="Hub de Mundos">
+    <!-- Planetas decorativos (SVG) -->
+    <div class="planet planet-left" aria-hidden="true">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="48" fill="#7C3AED"/>
+        <ellipse cx="60" cy="60" rx="72" ry="20" stroke="#A78BFA" stroke-width="4" fill="none" transform="rotate(-15 60 60)"/>
+        <circle cx="40" cy="35" r="10" fill="#A78BFA" opacity=".35"/>
+      </svg>
+    </div>
+
+    <div class="planet planet-right" aria-hidden="true">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="42" fill="#1E3A5F"/>
+        <circle cx="30" cy="30" r="12" fill="#2563EB" opacity=".4"/>
+      </svg>
+    </div>
+
+    <!-- Estrelas decorativas (spanks gerados via JS) -->
+    <div class="stars-bg" id="starsBg" aria-hidden="true"></div>
+
+    <div class="hero-text">
+      <h1 class="hero-title">HUB DE MUNDOS</h1>
+      <p class="hero-subtitle">Escolha um mundo para iniciar sua jornada e dominar as matrizes!</p>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════
+       GRADE DE MUNDOS  – 4 cards
+  ════════════════════════════════════════════ -->
+  <main class="worlds-grid" role="main" aria-label="Selecionar mundo">
+
+    <!-- ── MUNDO 1 – Concluído ── -->
+    <article class="world-card world-card--green" data-world="1" aria-label="Mundo 1: Fundação das Matrizes – Concluído">
+      <!-- Cabeçalho colorido -->
+      <div class="card-header card-header--green">
+        <h2 class="card-title">MUNDO 1</h2>
+      </div>
+
+      <!-- Imagem / ilustração do mundo -->
+      <div class="card-illustration">
+        <!-- Portal verde (SVG desenhado) -->
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- Céu -->
+          <defs>
+            <radialGradient id="sky1" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#87CEEB"/>
+              <stop offset="100%" stop-color="#4A90D9"/>
+            </radialGradient>
+            <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00FF88" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#00AA44" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="260" height="160" fill="url(#sky1)"/>
+          <!-- Grama -->
+          <ellipse cx="130" cy="155" rx="130" ry="25" fill="#3A7D44"/>
+          <rect x="0" y="130" width="260" height="30" fill="#3A7D44"/>
+          <!-- Pedras laterais do arco -->
+          <rect x="70" y="55" width="30" height="85" rx="5" fill="#888"/>
+          <rect x="160" y="55" width="30" height="85" rx="5" fill="#888"/>
+          <!-- Arco pedras superior -->
+          <path d="M70 60 Q130 10 190 60" stroke="#777" stroke-width="28" fill="none" stroke-linecap="round"/>
+          <path d="M70 60 Q130 10 190 60" stroke="#999" stroke-width="18" fill="none" stroke-linecap="round"/>
+          <!-- Portal brilho -->
+          <ellipse cx="130" cy="100" rx="40" ry="55" fill="url(#glow1)"/>
+          <ellipse cx="130" cy="100" rx="28" ry="40" fill="#00FF88" opacity=".7"/>
+          <ellipse cx="130" cy="100" rx="16" ry="28" fill="#AAFFCC" opacity=".9"/>
+          <!-- Arbustos -->
+          <circle cx="50" cy="135" r="16" fill="#2E6B35"/>
+          <circle cx="210" cy="135" r="14" fill="#2E6B35"/>
+          <circle cx="35" cy="140" r="10" fill="#3A7D44"/>
+          <circle cx="225" cy="138" r="10" fill="#3A7D44"/>
+        </svg>
+      </div>
+
+      <!-- Informações do card -->
+      <div class="card-body">
+        <h3 class="card-name">Fundação das Matrizes</h3>
+        <p class="card-desc">Aprenda o básico e dê os primeiros passos no universo das matrizes.</p>
+
+        <!-- Rodapé: estrelas + botão -->
+        <div class="card-footer">
+          <span class="card-stars" aria-label="48 de 48 estrelas">
+            <svg viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            0/5
+          </span>
+          <button class="btn-world btn-concluido" onclick="handleMundo(1)" aria-label="Mundo 1 concluído – revisitar">Começar</button>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- ── MUNDO 2 – Em progresso ── -->
+    <article class="world-card world-card--blue" data-world="2" aria-label="Mundo 2: Operações Básicas – Em progresso">
+      <div class="card-header card-header--blue">
+        <h2 class="card-title">MUNDO 2</h2>
+      </div>
+
+      <div class="card-illustration">
+        <!-- Paisagem montanhas azuis -->
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0A2A6E"/>
+              <stop offset="100%" stop-color="#1A4FA8"/>
+            </linearGradient>
+          </defs>
+          <rect width="260" height="160" fill="url(#sky2)"/>
+          <!-- Nuvens -->
+          <ellipse cx="60" cy="30" rx="30" ry="12" fill="#3A6FD8" opacity=".5"/>
+          <ellipse cx="200" cy="45" rx="25" ry="10" fill="#3A6FD8" opacity=".4"/>
+          <!-- Montanhas fundo -->
+          <polygon points="30,130 90,50 150,130" fill="#0D3580"/>
+          <polygon points="80,130 150,30 220,130" fill="#0B2E70"/>
+          <polygon points="130,130 200,60 270,130" fill="#0D3580"/>
+          <!-- Neve topo -->
+          <polygon points="90,50 105,70 75,70" fill="#C8DCFF"/>
+          <polygon points="150,30 168,58 132,58" fill="#C8DCFF"/>
+          <polygon points="200,60 215,82 185,82" fill="#C8DCFF"/>
+          <!-- Rio / água -->
+          <ellipse cx="130" cy="148" rx="80" ry="14" fill="#1A6AC8" opacity=".7"/>
+          <!-- Gelo brilhante chão -->
+          <rect x="0" y="130" width="260" height="30" fill="#0B2866"/>
+        </svg>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-name">Operações Básicas</h3>
+        <p class="card-desc">Explore as operações com matrizes e avance seu conhecimento.</p>
+
+        <div class="card-footer">
+          <span class="card-stars" aria-label="36 de 48 estrelas">
+            <svg viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            0/10
+          </span>
+          <button class="btn-world btn-continuar" onclick="handleMundo(2)" aria-label="Continuar Mundo 2">Iniciar</button>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- ── MUNDO 3 – Desbloqueado ── -->
+    <article class="world-card world-card--purple" data-world="3" aria-label="Mundo 3: Desafios Avançados">
+      <div class="card-header card-header--purple">
+        <h2 class="card-title">MUNDO 3</h2>
+      </div>
+
+      <div class="card-illustration">
+        <!-- Caverna roxa -->
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="caveglow" cx="50%" cy="80%" r="60%">
+              <stop offset="0%" stop-color="#6D28D9" stop-opacity=".6"/>
+              <stop offset="100%" stop-color="#1E0A3C" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="260" height="160" fill="#1E0A3C"/>
+          <ellipse cx="130" cy="150" rx="100" ry="30" fill="url(#caveglow)"/>
+          <path d="M40,160 Q40,60 130,40 Q220,60 220,160 Z" fill="#2D0A5C"/>
+          <path d="M70,160 Q70,90 130,75 Q190,90 190,160 Z" fill="#1A0438"/>
+          <polygon points="90,155 85,115 95,115" fill="#7C3AED"/>
+          <polygon points="110,160 103,125 117,125" fill="#9B5CF6"/>
+          <polygon points="155,158 148,118 162,118" fill="#7C3AED"/>
+          <polygon points="175,155 170,120 180,120" fill="#A78BFA"/>
+          <polygon points="50,160 44,130 56,130" fill="#6D28D9"/>
+          <polygon points="210,160 204,128 216,128" fill="#6D28D9"/>
+          <line x1="90" y1="115" x2="87" y2="108" stroke="#C4B5FD" stroke-width="1.5"/>
+          <line x1="110" y1="125" x2="107" y2="116" stroke="#C4B5FD" stroke-width="1.5"/>
+          <line x1="155" y1="118" x2="152" y2="110" stroke="#C4B5FD" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-name">Desafios Avançados</h3>
+        <p class="card-desc">Desafios mais complexos esperam por você. Mostre seu potencial!</p>
+
+        <div class="card-footer">
+          <!-- Estrelas atualizadas dinamicamente pelo hub_patch.js -->
+          <span class="card-stars" id="stars-mundo3" aria-label="0 de 10 estrelas">
+            <svg viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            0/10
+          </span>
+          <!-- Botão desbloqueado — redireciona para mundo3.html -->
+          <button class="btn-world btn-continuar" onclick="handleMundo(3)" aria-label="Iniciar Mundo 3">
+            Iniciar
+          </button>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- ── MUNDO 4 – Bloqueado ── -->
+    <article class="world-card world-card--orange" data-world="4" aria-label="Mundo 4: Matriz Suprema – Bloqueado">
+      <div class="card-header card-header--orange">
+        <h2 class="card-title">MUNDO 4</h2>
+      </div>
+
+      <div class="card-illustration">
+        <!-- Castelo vulcânico -->
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lavasky" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#7C1A00"/>
+              <stop offset="100%" stop-color="#C2410C"/>
+            </linearGradient>
+            <radialGradient id="lavaglow" cx="50%" cy="100%" r="60%">
+              <stop offset="0%" stop-color="#F97316" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="#EA580C" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="260" height="160" fill="url(#lavasky)"/>
+          <!-- Nuvens fogo -->
+          <ellipse cx="50" cy="30" rx="35" ry="13" fill="#9A3412" opacity=".6"/>
+          <ellipse cx="210" cy="25" rx="28" ry="11" fill="#9A3412" opacity=".5"/>
+          <!-- Montanhas vulcânicas -->
+          <polygon points="0,160 60,60 120,160" fill="#4A1000"/>
+          <polygon points="80,160 160,20 240,160" fill="#5C1500"/>
+          <polygon points="150,160 220,70 280,160" fill="#4A1000"/>
+          <!-- Lava brilho -->
+          <ellipse cx="160" cy="155" rx="80" ry="18" fill="url(#lavaglow)"/>
+          <!-- Rio de lava -->
+          <path d="M140,100 Q150,120 145,160" stroke="#F97316" stroke-width="10" fill="none" opacity=".8"/>
+          <path d="M155,90 Q165,115 158,160" stroke="#FCD34D" stroke-width="4" fill="none" opacity=".6"/>
+          <!-- Castelo corpo -->
+          <rect x="100" y="55" width="70" height="75" fill="#1C0A00"/>
+          <!-- Torres -->
+          <rect x="95" y="40" width="22" height="40" fill="#2C1200"/>
+          <rect x="153" y="40" width="22" height="40" fill="#2C1200"/>
+          <rect x="118" y="30" width="24" height="45" fill="#2C1200"/>
+          <!-- Ameias -->
+          <rect x="95" y="35" width="5" height="8" fill="#1C0A00"/>
+          <rect x="104" y="35" width="5" height="8" fill="#1C0A00"/>
+          <rect x="153" y="35" width="5" height="8" fill="#1C0A00"/>
+          <rect x="162" y="35" width="5" height="8" fill="#1C0A00"/>
+          <rect x="118" y="25" width="5" height="8" fill="#1C0A00"/>
+          <rect x="127" y="25" width="5" height="8" fill="#1C0A00"/>
+          <rect x="136" y="25" width="5" height="8" fill="#1C0A00"/>
+          <!-- Janela iluminada -->
+          <rect x="127" y="65" width="16" height="22" rx="8" fill="#F97316" opacity=".7"/>
+          <!-- Portão -->
+          <rect x="118" y="100" width="24" height="30" rx="4" fill="#0A0500"/>
+        </svg>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-name">Matriz Suprema</h3>
+        <p class="card-desc">Somente os melhores chegam até aqui. Você está pronto?</p>
+
+        <div class="card-footer">
+          <!-- Sem estrelas exibidas no card 4 (igual à imagem) -->
+          <span class="card-stars" aria-label="36 de 48 estrelas">
+            <svg viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            0/10
+          </span>
+          <button class="btn-world btn-continuar" onclick="handleMundo(4)" aria-label="Continuar Mundo 4">Iniciar</button>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+
+  <!-- ════════════════════════════════════════════
+       NAVBAR INFERIOR  – navegação entre seções
+  ════════════════════════════════════════════ -->
+  <footer class="bottom-nav" role="navigation" aria-label="Navegação principal">
+
+    <a href="index.html" class="bottom-nav__item bottom-nav__item--active" aria-label="Hub" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Hub</span>
+    </a>
+
+    
+
+    <a href="ranking.html" class="bottom-nav__item" aria-label="Ranking">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M8 21V12M12 21V3M16 21V8"/>
+        <path d="M6 9l-2 3 2 0"/>
+        <path d="M8 3l4-2 4 2"/>
+        <circle cx="19" cy="5" r="2"/>
+      </svg>
+      <span>Ranking</span>
+    </a>
+
+    <a href="perfil.html" class="bottom-nav__item" aria-label="Perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Perfil</span>
+    </a>
+
+   
+
+  </footer>
+
+
+  <!-- ════════════════════════════════════════════
+       MODAL  – aviso de mundo bloqueado
+  ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal">
+      <div class="modal-icon" aria-hidden="true">🔒</div>
+      <h2 class="modal-title" id="modalTitle">Mundo Bloqueado</h2>
+      <p class="modal-msg" id="modalMsg">Complete o mundo anterior para desbloquear este!</p>
+      <button class="modal-btn" onclick="fecharModal()">Entendido</button>
+    </div>
+  </div>
+
+
+  <!-- Script principal -->
+  <script src="script.js"></script>
+  <script src="api.js"></script>
+  <script src="hub_patch.js"></script>
+</body>
+</html>

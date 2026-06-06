@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>MATRIVERSE · Painel Docente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="docente.css"/>
+</head>
+<body>
+  <div class="space-bg">
+    <div class="stars s1"></div><div class="stars s2"></div>
+    <div class="nebula nb1"></div><div class="nebula nb2"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="planet-sm"><div class="pc"></div><div class="ring"></div></div>
+      <span class="logo-text">MATRI<span>VERSE</span></span>
+      <span class="badge-docente">👨‍🏫 Docente</span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-nome" id="nomeDocente">—</span>
+      <button class="btn-sair" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- COLUNA ESQUERDA: criar sala + lista de salas -->
+    <aside class="sidebar">
+      <div class="panel">
+        <h2 class="panel-title">➕ Nova Sala</h2>
+        <div id="erroSala" class="msg-erro" style="display:none"></div>
+        <label class="field">
+          <span>Nome da sala</span>
+          <input type="text" id="nomeSala" placeholder="Ex: 3º Ano B – Matrizes"/>
+        </label>
+        <button class="btn-neon" id="btnCriarSala">Criar Sala</button>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">📡 Minhas Salas</h2>
+        <div id="listaSalas" class="salas-list">
+          <p class="empty-msg">Nenhuma sala criada ainda.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COLUNA DIREITA: detalhes da sala selecionada -->
+    <section class="content">
+      <!-- Estado inicial -->
+      <div id="estadoVazio" class="empty-state">
+        <div class="empty-icon">🪐</div>
+        <h2>Selecione uma sala</h2>
+        <p>Clique em uma sala à esquerda para ver o desempenho dos alunos.</p>
+      </div>
+
+      <!-- Painel de sala -->
+      <div id="painelSala" style="display:none">
+        <div class="sala-header">
+          <div>
+            <h2 id="salaNome" class="sala-titulo">—</h2>
+            <p id="salaInfo" class="sala-sub">—</p>
+          </div>
+          <div class="codigo-box">
+            <span class="codigo-label">Código</span>
+            <span id="salaCodigo" class="codigo-val">——</span>
+            <button class="btn-copy" onclick="copiarCodigo()">Copiar</button>
+          </div>
+        </div>
+
+        <!-- Stats rápidas -->
+        <div class="stats-row" id="statsRow"></div>
+
+        <!-- Tabela de alunos -->
+        <div class="table-wrap">
+          <table class="tabela-alunos">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Aluno</th>
+                <th>Estrelas ⭐</th>
+                <th>Mundo atual</th>
+                <th>Respostas</th>
+                <th>Acertos</th>
+                <th>% Acerto</th>
+              </tr>
+            </thead>
+            <tbody id="corpoTabela"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="api.js"></script>
+  <script>
+    let salaAtualId = null;
+
+    // ── Auth ──────────────────────────────────
+    const usuarioStr = sessionStorage.getItem('mv_usuario');
+    if (!usuarioStr) { window.location.href = 'login.html'; }
+    const usuario = JSON.parse(usuarioStr);
+    if (usuario.perfil !== 'docente') { window.location.href = 'index.html'; }
+    document.getElementById('nomeDocente').textContent = usuario.nome;
+
+    document.getElementById('btnSair').addEventListener('click', async () => {
+      await API.logout();
+      sessionStorage.removeItem('mv_usuario');
+      window.location.href = 'landing.html';
+    });
+
+    // ── Criar sala ────────────────────────────
+    document.getElementById('btnCriarSala').addEventListener('click', async () => {
+      const nome = document.getElementById('nomeSala').value.trim();
+      const err  = document.getElementById('erroSala');
+      err.style.display = 'none';
+      if (!nome) { err.textContent='Informe o nome da sala.'; err.style.display='block'; return; }
+      const res = await API.criarSala(nome);
+      if (res.erro) { err.textContent=res.erro; err.style.display='block'; return; }
+      document.getElementById('nomeSala').value = '';
+      carregarSalas();
+    });
+
+    // ── Carregar salas ────────────────────────
+    async function carregarSalas() {
+      const salas = await API.minhasSalas();
+      const lista = document.getElementById('listaSalas');
+      if (!salas.length) { lista.innerHTML = '<p class="empty-msg">Nenhuma sala criada ainda.</p>'; return; }
+      lista.innerHTML = salas.map(s => `
+        <div class="sala-item ${salaAtualId===s.id?'ativa':''}" onclick="abrirSala(${s.id})">
+          <div class="si-nome">${s.nome}</div>
+          <div class="si-info">
+            <span class="codigo-chip">${s.codigo}</span>
+            <span class="aluno-count">👥 ${s.total_alunos}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Abrir sala ────────────────────────────
+    async function abrirSala(id) {
+      salaAtualId = id;
+      carregarSalas();
+      const dados = await API.alunosDaSala(id);
+      if (dados.erro) return;
+
+      document.getElementById('estadoVazio').style.display = 'none';
+      document.getElementById('painelSala').style.display  = 'block';
+      document.getElementById('salaNome').textContent  = dados.sala.nome;
+      document.getElementById('salaCodigo').textContent = dados.sala.codigo;
+
+      const alunos = dados.alunos;
+      const totalEstrelas = alunos.reduce((s,a)=>s+(a.total_estrelas||0),0);
+      const totalRespostas = alunos.reduce((s,a)=>s+(a.total_respostas||0),0);
+      const totalAcertos   = alunos.reduce((s,a)=>s+(a.acertos||0),0);
+      const pct = totalRespostas ? Math.round(totalAcertos/totalRespostas*100) : 0;
+
+      document.getElementById('salaInfo').textContent = `${alunos.length} aluno(s) matriculado(s)`;
+      document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card"><b>${alunos.length}</b><small>Alunos</small></div>
+        <div class="stat-card"><b>${totalEstrelas}⭐</b><small>Total estrelas</small></div>
+        <div class="stat-card"><b>${totalRespostas}</b><small>Respostas</small></div>
+        <div class="stat-card"><b>${pct}%</b><small>Acertos</small></div>
+      `;
+
+      const tbody = document.getElementById('corpoTabela');
+      if (!alunos.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-td">Nenhum aluno nesta sala ainda.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = alunos.map((a,i) => {
+        const pctA = a.total_respostas ? Math.round((a.acertos||0)/a.total_respostas*100) : 0;
+        const bar  = `<div class="pct-bar"><div class="pct-fill" style="width:${pctA}%"></div></div>`;
+        return `
+          <tr>
+            <td class="pos">${i+1}</td>
+            <td class="nome-cell"><b>${a.nome}</b><br><small>${a.email}</small></td>
+            <td class="estrelas">${a.total_estrelas || 0} ⭐</td>
+            <td>M${a.mundo_atual || 0}</td>
+            <td>${a.total_respostas || 0}</td>
+            <td>${a.acertos || 0}</td>
+            <td>${bar} ${pctA}%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function copiarCodigo() {
+      const cod = document.getElementById('salaCodigo').textContent;
+      navigator.clipboard.writeText(cod).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.textContent = 'Copiado!';
+        setTimeout(()=>btn.textContent='Copiar', 2000);
+      });
+    }
+
+    window.abrirSala    = abrirSala;
+    window.copiarCodigo = copiarCodigo;
+
+    carregarSalas();
+  </script>
+</body>
+</html>

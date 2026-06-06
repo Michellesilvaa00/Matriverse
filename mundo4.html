@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>MatriVerse · Mundo 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="mundo4.css" />
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="stars stars2"></div>
+  <div class="stars stars3"></div>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo">
+        <div class="planet">
+          <div class="ring"></div>
+        </div>
+        <span class="logo-text">MATRI<span>VERSE</span></span>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <h1 class="world-title">MUNDO 4</h1>
+      <span class="world-sub">Operações com Matrizes</span>
+    </div>
+
+    <div class="nav-right">
+      <div class="stars-counter">
+        <span class="star-icon">⭐</span>
+        <span id="starCount">0</span>/10
+      </div>
+      <div class="timer-wrap">
+        <svg class="timer-ring" width="56" height="56">
+          <circle cx="28" cy="28" r="24" class="ring-bg"></circle>
+          <circle cx="28" cy="28" r="24" class="ring-fg" id="ringFg"></circle>
+        </svg>
+        <span class="timer-text" id="timerText">60</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="game-area">
+    <section class="question-card" id="questionCard">
+      <div class="q-header">
+        <span class="q-number">Pergunta <span id="qIndex">1</span>/10</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      <h2 class="q-text" id="questionText">Carregando pergunta...</h2>
+      <div class="alternatives" id="alternatives"></div>
+    </section>
+
+    <section class="feedback correct hidden" id="feedbackCorrect">
+      <div class="icon-circle green">
+        <svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2>Resposta correta!</h2>
+      <p>+1 estrela conquistada ⭐</p>
+      <button class="btn-neon" id="nextBtn">Próxima pergunta →</button>
+    </section>
+
+    <section class="feedback wrong hidden" id="feedbackWrong">
+      <div class="icon-circle red">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <h2 id="wrongTitle">Resposta incorreta!</h2>
+      <p id="wrongSub">Tente novamente.</p>
+    </section>
+
+    <section class="final-screen hidden" id="finalScreen">
+      <div class="trophy">🏆</div>
+      <h1 class="final-title">MISSÃO CONCLUÍDA</h1>
+      <div class="final-stars">
+        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+      </div>
+      <p class="final-msg">Você dominou as operações básicas com matrizes!</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn-neon" id="restartBtn">Jogar novamente</button>
+        <a href="index.html" class="btn-neon" style="text-decoration:none;">← Voltar ao Hub</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="api.js"></script>
+  <script src="mundo4.js"></script>
+</body>
+</html>
