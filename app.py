@@ -8,7 +8,7 @@ import sqlite3, hashlib, random, string
 from datetime import datetime
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "front-end")
-app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
+app = Flask(__name__)
 
 # ── CONFIG ──────────────────────────────────────────────
 IS_PROD = os.environ.get("FLASK_ENV") == "production"
