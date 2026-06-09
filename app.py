@@ -20,24 +20,7 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
 )
 
-# CORS: aceita localhost (dev) e qualquer subdomínio .onrender.com (prod)
-ALLOWED_ORIGINS = [
-    "http://localhost:5000",
-    "http://localhost:8080",
-    "http://127.0.0.1:5000",
-    "http://127.0.0.1:8080",
-]
-
-def cors_origin_check(origin):
-    if not origin:
-        return False
-    if origin in ALLOWED_ORIGINS:
-        return True
-    if origin.endswith(".onrender.com"):
-        return True
-    return False
-
-CORS(app, supports_credentials=True, origins=cors_origin_check)
+CORS(app, supports_credentials=True, origins="*")
 
 # ── BANCO DE DADOS ──────────────────────────────────────
 # No Render o filesystem é efêmero — usamos /tmp para persistência
