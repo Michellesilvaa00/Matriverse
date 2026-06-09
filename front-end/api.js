@@ -1,16 +1,12 @@
-/* ═══════════════════════════════════════════════════════════
-   MATRIVERSE · api.js
-   Em produção (Render) o frontend é servido pelo próprio Flask,
-   então a API fica na mesma origem — sem hardcode de localhost.
-   Em dev local (file:// ou localhost:8080) aponta para :5000.
-═══════════════════════════════════════════════════════════ */
+/* MATRIVERSE · api.js — inclua em TODAS as páginas */
 
-// Se estiver rodando direto do Flask (produção), usa URL relativa.
-// Se estiver em dev local (porta 8080 ou file://), aponta para :5000.
+// Detecta automaticamente a URL base:
+// - Em produção (Render), a API fica no mesmo domínio → URL relativa
+// - Em desenvolvimento local, aponta para localhost:5000
 const API_URL = (
-  window.location.port === "8080" || window.location.protocol === "file:"
-) ? "http://localhost:5000/api"
-  : "/api";
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+) ? "http://localhost:5000/api" : "/api";
 
 const API = {
   cadastro: (nome, email, senha, perfil) => _post("/cadastro", { nome, email, senha, perfil }),
@@ -33,7 +29,7 @@ const API = {
   detalheAluno: (salaId, alunoId) => _get(`/salas/${salaId}/aluno/${alunoId}`),
 
   // Salas — aluno
-  entrarSala:       (codigo) => _post("/salas/entrar",           { codigo }),
+  entrarSala:       (codigo) => _post("/salas/entrar",          { codigo }),
   minhasMatriculas: ()       => _get("/salas/minhas-matriculas"),
 };
 
@@ -44,7 +40,7 @@ async function _get(path) {
       headers: _headers(),
     });
     return await r.json();
-  } catch (e) {
+  } catch(e) {
     console.error("API GET", path, e);
     return { erro: "Sem conexão com o servidor." };
   }
@@ -63,7 +59,7 @@ async function _post(path, body) {
       sessionStorage.setItem("mv_uid", data.usuario.id);
     }
     return data;
-  } catch (e) {
+  } catch(e) {
     console.error("API POST", path, e);
     return { erro: "Sem conexão com o servidor." };
   }
