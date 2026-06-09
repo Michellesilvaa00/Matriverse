@@ -7,7 +7,8 @@ from flask_cors import CORS
 import sqlite3, hashlib, random, string
 from datetime import datetime
 
-app = Flask(__name__, static_folder=".", static_url_path="")
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "front-end")
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
 
 # ── CONFIG ──────────────────────────────────────────────
 IS_PROD = os.environ.get("FLASK_ENV") == "production"
@@ -153,11 +154,11 @@ def usuario_logado():
 # ── SERVIR ARQUIVOS ESTÁTICOS (HTML, CSS, JS) ───────────
 @app.route("/")
 def index():
-    return send_from_directory(".", "landing.html")
+    return send_from_directory(FRONTEND_DIR, "landing.html")
 
 @app.route("/<path:filename>")
 def static_files(filename):
-    return send_from_directory(".", filename)
+    return send_from_directory(FRONTEND_DIR, filename)
 
 # ── HEALTH CHECK ────────────────────────────────────────
 @app.route("/api/health")
