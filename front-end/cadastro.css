@@ -65,3 +65,12 @@ body{background:radial-gradient(ellipse at top,#1a1060 0%,#0a0830 45%,var(--bg) 
 .link-login{text-align:center;margin-top:20px;color:var(--muted);font-size:.9rem}
 .link-login a{color:var(--purple);font-weight:800;text-decoration:none}
 .link-login a:hover{text-decoration:underline}
+
+/* RESPONSIVO (celular pequeno) */
+@media (max-width: 380px) {
+  .page-wrap{padding:24px 12px 40px}
+  .card{padding:24px 18px}
+  .card-title{font-size:1.35rem}
+  .profile-grid{gap:8px}
+  .profile-box{padding:12px 8px}
+}
