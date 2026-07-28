@@ -1,4 +1,4 @@
-* MATRIVERSE · MUNDO 1 · mundo1.js com API
+/* MATRIVERSE · MUNDO 1 · mundo1.js com API
    BUGFIX: o Mundo 1 antes rodava 100% no navegador (sem api.js, sem
    API.responder/API.salvarProgresso). O aluno concluía o mundo, mas o
    backend nunca ficava sabendo — então o progresso nunca era salvo,
