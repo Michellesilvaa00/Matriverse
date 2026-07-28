@@ -27,6 +27,7 @@ const API = {
   minhasSalas:  ()     => _get("/salas/minhas"),
   alunosDaSala: (id)   => _get(`/salas/${id}/alunos`),
   detalheAluno: (salaId, alunoId) => _get(`/salas/${salaId}/aluno/${alunoId}`),
+  rankingDaSala: (id)  => _get(`/salas/${id}/ranking`),
 
   // Salas — aluno
   entrarSala:       (codigo) => _post("/salas/entrar",          { codigo }),
