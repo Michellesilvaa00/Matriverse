@@ -249,10 +249,21 @@ async function responder(idx, btn) {
       throw new Error('Resposta inválida do backend');
     }
   } catch {
-    /* ── Fallback: valida localmente com campo "correta" ── */
-    const respostaCorreta = atual.correta ?? atual.correct ?? 0;
-    certo    = (idx === respostaCorreta);
-    idxCerto = respostaCorreta;
+    /* ── Fallback: valida localmente com campo "correta" ──
+       BUGFIX: o "?? 0" fazia a validação offline assumir a alternativa A
+       como certa sempre que o gabarito local não existisse (por exemplo,
+       questão vinda do backend, que não inclui o campo "correta" por
+       segurança). Isso podia aceitar/recusar respostas de forma
+       imprevisível. Agora, sem gabarito confiável, a resposta é tratada
+       como errada (nunca aceita indevidamente). */
+    const respostaCorreta = atual.correta ?? atual.correct;
+    if (typeof respostaCorreta !== 'undefined') {
+      certo    = (idx === respostaCorreta);
+      idxCerto = respostaCorreta;
+    } else {
+      certo    = false;
+      idxCerto = null;
+    }
   }
 
   // Marca visualmente: verde = certo, vermelho = errado
