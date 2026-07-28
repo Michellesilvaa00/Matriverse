@@ -18,18 +18,18 @@ async function init(){
     else throw 0;
   }catch{
     questoes=[
-      {id:201,enunciado:"Qual é a ordem de uma matriz com 3 linhas e 4 colunas?",alternativas:["4x3","3x4","3x3","4x4"]},
-      {id:202,enunciado:"Uma matriz QUADRADA tem:",alternativas:["Linhas > colunas","Só uma linha","Linhas = colunas","Todos zeros"]},
-      {id:203,enunciado:"A = [[1,2],[3,4]], B = [[5,6],[7,8]]. A+B =",alternativas:["[[6,8],[10,12]]","[[5,12],[21,32]]","[[4,4],[4,4]]","[[6,7],[9,10]]"]},
-      {id:204,enunciado:"Diagonal principal de I₃:",alternativas:["Zeros","Uns","Aleatórios","1,2,3"]},
-      {id:205,enunciado:"A=[[7,2,9],[4,5,6],[1,8,3]], a₂₃=",alternativas:["9","6","8","5"]},
-      {id:206,enunciado:"Diagonal de [[2,0,0],[0,5,0],[0,0,9]]:",alternativas:["0,0,0","2,5,9","2,0,9","5,0,0"]},
-      {id:207,enunciado:"Transposta de A=[[1,2,3],[4,5,6]]:",alternativas:["[[1,2,3],[4,5,6]]","[[6,5,4],[3,2,1]]","[[1,4],[2,5],[3,6]]","[[3,2,1],[6,5,4]]"]},
-      {id:208,enunciado:"A=[[1,2],[3,4]] × escalar 2:",alternativas:["[[1,2],[3,4]]","[[2,4],[6,8]]","[[3,4],[5,6]]","[[2,2],[4,4]]"]},
-      {id:209,enunciado:"Quantos elementos tem uma matriz 4×5?",alternativas:["9","16","20","25"]},
-      {id:210,enunciado:"aᵢⱼ = i+j → a₃₂ =",alternativas:["5","6","1","9"]},
-      {id:211,enunciado:"A=[[2,1],[0,3]], B=[[1,4],[2,1]], A-B=",alternativas:["[[1,-3],[-2,2]]","[[3,5],[2,4]]","[[1,3],[2,2]]","[[-1,3],[2,-2]]"]},
-      {id:212,enunciado:"Uma matriz LINHA possui:",alternativas:["Só uma coluna","Só uma linha","Linhas = colunas","Nenhum elemento"]},
+      {id:201,enunciado:"Qual é a ordem de uma matriz com 3 linhas e 4 colunas?",alternativas:["4x3","3x4","3x3","4x4"],correta:1},
+      {id:202,enunciado:"Uma matriz QUADRADA tem:",alternativas:["Linhas > colunas","Só uma linha","Linhas = colunas","Todos zeros"],correta:2},
+      {id:203,enunciado:"A = [[1,2],[3,4]], B = [[5,6],[7,8]]. A+B =",alternativas:["[[6,8],[10,12]]","[[5,12],[21,32]]","[[4,4],[4,4]]","[[6,7],[9,10]]"],correta:0},
+      {id:204,enunciado:"Diagonal principal de I₃:",alternativas:["Zeros","Uns","Aleatórios","1,2,3"],correta:1},
+      {id:205,enunciado:"A=[[7,2,9],[4,5,6],[1,8,3]], a₂₃=",alternativas:["9","6","8","5"],correta:1},
+      {id:206,enunciado:"Diagonal de [[2,0,0],[0,5,0],[0,0,9]]:",alternativas:["0,0,0","2,5,9","2,0,9","5,0,0"],correta:1},
+      {id:207,enunciado:"Transposta de A=[[1,2,3],[4,5,6]]:",alternativas:["[[1,2,3],[4,5,6]]","[[6,5,4],[3,2,1]]","[[1,4],[2,5],[3,6]]","[[3,2,1],[6,5,4]]"],correta:2},
+      {id:208,enunciado:"A=[[1,2],[3,4]] × escalar 2:",alternativas:["[[1,2],[3,4]]","[[2,4],[6,8]]","[[3,4],[5,6]]","[[2,2],[4,4]]"],correta:1},
+      {id:209,enunciado:"Quantos elementos tem uma matriz 4×5?",alternativas:["9","16","20","25"],correta:2},
+      {id:210,enunciado:"aᵢⱼ = i+j → a₃₂ =",alternativas:["5","6","1","9"],correta:0},
+      {id:211,enunciado:"A=[[2,1],[0,3]], B=[[1,4],[2,1]], A-B=",alternativas:["[[1,-3],[-2,2]]","[[3,5],[2,4]]","[[1,3],[2,2]]","[[-1,3],[2,-2]]"],correta:0},
+      {id:212,enunciado:"Uma matriz LINHA possui:",alternativas:["Só uma coluna","Só uma linha","Linhas = colunas","Nenhum elemento"],correta:1},
     ];
   }
   fila=shuffle([...questoes]);
@@ -72,8 +72,15 @@ async function responder(idx, btn){
   try{
     const r=await API.responder(MUNDO, atual.id, idx);
     if(r&&typeof r.correta!=='undefined'){ certo=r.correta; idxCerto=r.resposta_certa; }
-    else{ certo=true; idxCerto=idx; }
-  }catch{ certo=true; idxCerto=idx; }
+    else{ throw new Error('Resposta inválida do backend'); }
+  }catch{
+    // BUGFIX: antes, uma falha de conexão aceitava a resposta como certa
+    // automaticamente. Agora só é aceita como certa se o gabarito local
+    // (fallback) confirmar; caso contrário é tratada como errada.
+    const respostaCorreta = atual.correta ?? atual.correct;
+    if(typeof respostaCorreta !== 'undefined'){ certo=(idx===respostaCorreta); idxCerto=respostaCorreta; }
+    else { certo=false; idxCerto=null; }
+  }
   if(idxCerto!==null) document.querySelectorAll('.alt-btn')[idxCerto]?.classList.add('correct');
   if(!certo) btn.classList.add('wrong');
   setTimeout(()=>{ certo ? acerto() : erro(); }, 700);
@@ -93,3 +100,4 @@ async function finalizar(){
 $('nextBtn').addEventListener('click',()=>{ if(estrelas>=META) finalizar(); else proxima(); });
 $('restartBtn').addEventListener('click', init);
 init();
+
