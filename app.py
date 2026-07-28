@@ -15,7 +15,13 @@ IS_PROD = os.environ.get("FLASK_ENV") == "production"
 
 app.secret_key = os.environ.get("SECRET_KEY", "matriverse-dev-secret-2026")
 app.config.update(
-    SESSION_COOKIE_SAMESITE="None",
+    # BUGFIX: "SameSite=None" sem "Secure" é descartado pelos navegadores modernos
+    # (Chrome/Firefox) quando o site roda em HTTP puro, como em localhost durante o
+    # desenvolvimento/apresentação. Isso fazia o cookie de sessão nunca ser salvo,
+    # derrubando a autenticação e quebrando /api/responder — o que travava as
+    # questões dos mundos (ver mundo1.js). Em produção (HTTPS no Render) mantemos
+    # "None"+Secure normalmente, que é o correto para cross-site.
+    SESSION_COOKIE_SAMESITE="None" if IS_PROD else "Lax",
     SESSION_COOKIE_SECURE=IS_PROD,   # True em produção (HTTPS no Render)
     SESSION_COOKIE_HTTPONLY=True,
 )
@@ -288,6 +294,48 @@ def alunos_da_sala(sala_id):
     conn.close()
     return jsonify({"sala": dict(sala), "alunos": [dict(a) for a in alunos]})
 
+@app.route("/api/salas/<int:sala_id>/ranking")
+def ranking_sala(sala_id):
+    """Ranking da sala — visível para o docente dono da sala E para
+    qualquer aluno matriculado nela (usado no Hub e na tela de Ranking)."""
+    u = usuario_logado()
+    if not u: return jsonify({"erro": "Não autenticado."}), 401
+    conn = get_db()
+    sala = conn.execute("""
+        SELECT s.*, doc.nome AS docente_nome
+        FROM salas s JOIN usuarios doc ON doc.id = s.docente_id
+        WHERE s.id=?
+    """, (sala_id,)).fetchone()
+    if not sala: conn.close(); return jsonify({"erro": "Sala não encontrada."}), 404
+
+    eh_dono = (u["perfil"] == "docente" and sala["docente_id"] == u["id"])
+    eh_membro = False
+    if not eh_dono:
+        m = conn.execute("SELECT 1 FROM matriculas WHERE aluno_id=? AND sala_id=?", (u["id"], sala_id)).fetchone()
+        eh_membro = bool(m)
+    if not (eh_dono or eh_membro):
+        conn.close(); return jsonify({"erro": "Você não faz parte desta sala."}), 403
+
+    alunos = conn.execute("""
+        SELECT u.id, u.nome,
+               COALESCE(SUM(p.estrelas),0)  AS total_estrelas,
+               COALESCE(MAX(p.mundo),0)     AS mundo_atual,
+               COALESCE(SUM(p.concluido),0) AS mundos_concluidos
+        FROM matriculas m
+        JOIN usuarios u ON u.id = m.aluno_id
+        LEFT JOIN progresso p ON p.usuario_id = u.id
+        WHERE m.sala_id=? GROUP BY u.id
+        ORDER BY total_estrelas DESC, u.nome ASC
+    """, (sala_id,)).fetchall()
+    conn.close()
+
+    ranking = [{**dict(a), "posicao": i + 1, "voce": (a["id"] == u["id"])} for i, a in enumerate(alunos)]
+    return jsonify({
+        "sala": {"id": sala["id"], "nome": sala["nome"], "codigo": sala["codigo"], "docente_nome": sala["docente_nome"]},
+        "ranking": ranking,
+        "seu_perfil": u["perfil"],
+    })
+
 @app.route("/api/salas/<int:sala_id>/aluno/<int:aluno_id>")
 def detalhe_aluno_sala(sala_id, aluno_id):
     u = usuario_logado()
@@ -340,11 +388,17 @@ def salvar_progresso():
     d = request.json or {}
     mundo = d.get("mundo"); estrelas = d.get("estrelas", 0); concluido = int(d.get("concluido", False))
     conn = get_db()
-    existente = conn.execute("SELECT estrelas FROM progresso WHERE usuario_id=? AND mundo=?", (u["id"], mundo)).fetchone()
+    existente = conn.execute("SELECT estrelas, concluido FROM progresso WHERE usuario_id=? AND mundo=?", (u["id"], mundo)).fetchone()
     if existente:
         melhor = max(existente["estrelas"], estrelas)
+        # BUGFIX: "concluido" era sobrescrito pela tentativa atual, então replayar um
+        # mundo já concluído (por revisão, por exemplo) e tirar uma nota pior
+        # "desconcluía" o mundo — sumindo da contagem de mundos concluídos no
+        # ranking e no painel do docente. Agora o status de concluído é permanente
+        # (mantém o melhor resultado), igual já acontecia com as estrelas.
+        concluido_final = max(existente["concluido"], concluido)
         conn.execute("UPDATE progresso SET estrelas=?,tentativas=tentativas+1,concluido=?,atualizado=? WHERE usuario_id=? AND mundo=?",
-                     (melhor, concluido, datetime.now().isoformat(), u["id"], mundo))
+                     (melhor, concluido_final, datetime.now().isoformat(), u["id"], mundo))
     else:
         conn.execute("INSERT INTO progresso (usuario_id,mundo,estrelas,tentativas,concluido,atualizado) VALUES (?,?,?,1,?,?)",
                      (u["id"], mundo, estrelas, concluido, datetime.now().isoformat()))
@@ -354,9 +408,10 @@ def salvar_progresso():
 # ── RANKING ──────────────────────────────────────────────
 @app.route("/api/ranking")
 def ranking():
+    u = usuario_logado()
     conn = get_db()
     rows = conn.execute("""
-        SELECT u.nome,
+        SELECT u.id, u.nome,
                COALESCE(SUM(p.estrelas),0)  AS total_estrelas,
                COALESCE(MAX(p.mundo),0)     AS mundo_atual,
                COALESCE(SUM(p.concluido),0) AS mundos_concluidos
@@ -366,7 +421,13 @@ def ranking():
         GROUP BY u.id ORDER BY total_estrelas DESC LIMIT 20
     """).fetchall()
     conn.close()
-    return jsonify([dict(r) for r in rows])
+    resultado = []
+    for i, r in enumerate(rows):
+        item = dict(r)
+        item["posicao"] = i + 1
+        item["voce"] = bool(u and u["id"] == r["id"])
+        resultado.append(item)
+    return jsonify(resultado)
 
 # ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
