@@ -1,4 +1,4 @@
-/* MATRIVERSE · MUNDO 1 · mundo1.js com API
+* MATRIVERSE · MUNDO 1 · mundo1.js com API
    BUGFIX: o Mundo 1 antes rodava 100% no navegador (sem api.js, sem
    API.responder/API.salvarProgresso). O aluno concluía o mundo, mas o
    backend nunca ficava sabendo — então o progresso nunca era salvo,
@@ -19,11 +19,11 @@ const elQText  = $('questionText'), elOpts = $('optionsContainer');
 
 // Fallback local, usado só se a API estiver fora do ar
 const FALLBACK = [
-  { id: 101, enunciado: "O que é uma matriz?", alternativas: ["Uma operação matemática", "Uma tabela organizada em linhas e colunas", "Um gráfico cartesiano", "Um cálculo de divisão"] },
-  { id: 102, enunciado: "As linhas de uma matriz são organizadas:", alternativas: ["Horizontalmente", "Verticalmente", "Diagonalmente", "Circularmente"] },
-  { id: 103, enunciado: "O elemento A(2,3) representa:", alternativas: ["Linha 2 e coluna 3", "Linha 3 e coluna 2", "Coluna 2 e linha 1", "A diagonal da matriz"] },
-  { id: 104, enunciado: "Uma matriz quadrada possui:", alternativas: ["Mais linhas que colunas", "Mais colunas que linhas", "Mesmo número de linhas e colunas", "Apenas uma linha"] },
-  { id: 105, enunciado: "Dada a matriz:\n[ 2  3 ]\n[ 1  4 ]\nQual é o resultado da soma dos elementos da primeira linha?", alternativas: ["5", "6", "7", "8"] },
+  { id: 101, enunciado: "O que é uma matriz?", alternativas: ["Uma operação matemática", "Uma tabela organizada em linhas e colunas", "Um gráfico cartesiano", "Um cálculo de divisão"], correta: 1 },
+  { id: 102, enunciado: "As linhas de uma matriz são organizadas:", alternativas: ["Horizontalmente", "Verticalmente", "Diagonalmente", "Circularmente"], correta: 0 },
+  { id: 103, enunciado: "O elemento A(2,3) representa:", alternativas: ["Linha 2 e coluna 3", "Linha 3 e coluna 2", "Coluna 2 e linha 1", "A diagonal da matriz"], correta: 0 },
+  { id: 104, enunciado: "Uma matriz quadrada possui:", alternativas: ["Mais linhas que colunas", "Mais colunas que linhas", "Mesmo número de linhas e colunas", "Apenas uma linha"], correta: 2 },
+  { id: 105, enunciado: "Dada a matriz:\n[ 2  3 ]\n[ 1  4 ]\nQual é o resultado da soma dos elementos da primeira linha?", alternativas: ["5", "6", "7", "8"], correta: 0 },
 ];
 
 function shuffle(a) {
@@ -69,9 +69,19 @@ async function handleAnswer(selected, q) {
   let certo;
   try {
     const r = await API.responder(MUNDO, q.id, selected);
-    certo = (r && typeof r.correta !== 'undefined') ? r.correta : true;
+    if (r && typeof r.correta !== 'undefined') {
+      certo = r.correta;
+    } else {
+      throw new Error('Resposta inválida do backend');
+    }
   } catch {
-    certo = true; // sem conexão: não trava o aluno, apenas não persiste
+    // BUGFIX: antes, qualquer falha de conexão fazia a resposta ser aceita
+    // como "certa" automaticamente (certo = true), então bastava a API
+    // falhar (ou cair) para o aluno acertar tudo sem realmente responder
+    // certo. Agora só aceitamos como certa se conseguirmos confirmar via
+    // gabarito local (fallback); sem isso, a resposta é tratada como errada.
+    const respostaCorreta = q.correta ?? q.correct;
+    certo = (typeof respostaCorreta !== 'undefined') ? (selected === respostaCorreta) : false;
   }
   if (certo) {
     stars++;
@@ -98,3 +108,4 @@ async function finalizar() {
 }
 
 init();
+
