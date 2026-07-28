@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MatriVerse – Ranking da Sala</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .ranking-wrap { max-width: 720px; margin: 24px auto; padding: 0 20px; }
+
+    .sala-picker { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .sala-chip {
+      background: var(--bg-card); border: 2px solid transparent; border-radius: var(--radius-btn);
+      color: var(--txt-secondary); font-weight:800; font-size:.85rem; padding:9px 16px; cursor:pointer;
+    }
+    .sala-chip.ativo { border-color: var(--clr-purple); color:#fff; background: rgba(139,92,246,.25); }
+
+    .ranking-card {
+      background: var(--bg-card); border-radius: var(--radius-card); box-shadow: var(--shadow-card);
+      padding: 24px; margin-bottom: 20px;
+    }
+    .ranking-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom: 18px; }
+    .ranking-header h2 { font-family: var(--font-logo); font-size: 1.2rem; }
+    .ranking-header small { color: var(--txt-muted); display:block; margin-top:4px; }
+    .codigo-badge {
+      font-family: var(--font-logo); background: rgba(139,92,246,.2); border:1px solid var(--clr-purple);
+      color:#fff; padding:6px 12px; border-radius:8px; letter-spacing:2px; font-size:.85rem;
+    }
+
+    table.ranking-table { width:100%; border-collapse: collapse; }
+    .ranking-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.ranking-table th {
+      text-align:left; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em;
+      color: var(--txt-muted); padding: 8px 10px; border-bottom:1px solid rgba(255,255,255,.08);
+      white-space: nowrap;
+    }
+    table.ranking-table td { padding: 12px 10px; border-bottom:1px solid rgba(255,255,255,.05); font-weight:700; white-space: nowrap; }
+    table.ranking-table tr.voce td { background: rgba(139,92,246,.15); border-radius: 8px; }
+    .posicao-medalha { font-weight:900; }
+    .estrelas-cell { color: var(--clr-star); white-space:nowrap; }
+    .empty-msg { text-align:center; color: var(--txt-muted); padding: 30px 0; }
+    .cta-btn {
+      display:inline-block; margin-top:10px; background: linear-gradient(135deg,#8b5cf6,#0ea5e9);
+      color:#fff; padding:12px 22px; border-radius: var(--radius-btn); font-weight:800; font-size:.9rem;
+    }
+
+    @media (max-width: 480px) {
+      .ranking-wrap { padding: 0 12px; margin: 16px auto; }
+      .ranking-card { padding: 16px; }
+      .ranking-header { gap: 10px; }
+      .sala-chip { padding: 8px 12px; font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo" aria-label="Página inicial MatriVerse">
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="20" cy="20" rx="11" ry="11" fill="#9B5CF6"/>
+        <ellipse cx="20" cy="20" rx="19" ry="7" stroke="#C4B5FD" stroke-width="2.5" fill="none" transform="rotate(-20 20 20)"/>
+        <circle cx="14" cy="14" r="3" fill="#C4B5FD" opacity=".6"/>
+      </svg>
+      <span class="logo-text">MATRI<span class="logo-accent">VERSE</span></span>
+    </a>
+    <nav class="navbar-right">
+      <div class="user-info"><span id="saudacao">Olá!</span></div>
+      <button class="btn-sair" id="btnSair">Sair</button>
+    </nav>
+  </header>
+
+  <div class="ranking-wrap">
+    <h1 style="font-family:var(--font-logo); font-size:1.6rem; margin-bottom:6px;">🏆 Ranking</h1>
+    <p style="color:var(--txt-secondary); margin-bottom:20px;">Veja sua posição e a dos seus colegas de sala.</p>
+
+    <div id="salaPicker" class="sala-picker"></div>
+    <div id="rankingContainer"></div>
+  </div>
+
+  <footer class="bottom-nav" role="navigation" aria-label="Navegação principal">
+    <a href="index.html" class="bottom-nav__item" aria-label="Hub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Hub</span>
+    </a>
+    <a href="ranking.html" class="bottom-nav__item bottom-nav__item--active" aria-label="Ranking" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M8 21V12M12 21V3M16 21V8"/><path d="M6 9l-2 3 2 0"/><path d="M8 3l4-2 4 2"/><circle cx="19" cy="5" r="2"/>
+      </svg>
+      <span>Ranking</span>
+    </a>
+    <a href="perfil.html" class="bottom-nav__item" aria-label="Perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Perfil</span>
+    </a>
+  </footer>
+
+  <script src="api.js"></script>
+  <script>
+    (async function () {
+      const usuarioStr = sessionStorage.getItem('mv_usuario');
+      if (!usuarioStr) { window.location.href = 'login.html'; return; }
+      const usuario = JSON.parse(usuarioStr);
+      document.getElementById('saudacao').textContent = `Olá, ${usuario.nome.split(' ')[0]}!`;
+
+      document.getElementById('btnSair').addEventListener('click', async () => {
+        await API.logout();
+        sessionStorage.removeItem('mv_usuario');
+        window.location.href = 'landing.html';
+      });
+
+      const picker = document.getElementById('salaPicker');
+      const container = document.getElementById('rankingContainer');
+      let salas = [];
+
+      if (usuario.perfil === 'docente') {
+        salas = await API.minhasSalas();
+      } else {
+        salas = await API.minhasMatriculas();
+      }
+
+      if (!Array.isArray(salas) || !salas.length) {
+        container.innerHTML = `
+          <div class="ranking-card empty-msg">
+            ${usuario.perfil === 'docente'
+              ? 'Você ainda não criou nenhuma sala. Crie uma no Painel Docente.'
+              : 'Você ainda não entrou em nenhuma sala. Peça o código de 6 caracteres ao seu professor e entre pelo botão "Entrar em Sala" no Hub.'}
+            <br><a class="cta-btn" href="${usuario.perfil === 'docente' ? 'docente.html' : 'index.html'}">
+              ${usuario.perfil === 'docente' ? 'Ir para o Painel Docente' : 'Voltar ao Hub'}
+            </a>
+          </div>`;
+        return;
+      }
+
+      function renderPicker(ativoId) {
+        picker.innerHTML = salas.map(s => `
+          <button class="sala-chip ${s.id === ativoId ? 'ativo' : ''}" data-id="${s.id}">${s.nome}</button>
+        `).join('');
+        picker.querySelectorAll('.sala-chip').forEach(btn => {
+          btn.addEventListener('click', () => carregarRanking(Number(btn.dataset.id)));
+        });
+      }
+
+      async function carregarRanking(salaId) {
+        renderPicker(salaId);
+        container.innerHTML = '<div class="ranking-card empty-msg">Carregando...</div>';
+        const dados = await API.rankingDaSala(salaId);
+        if (dados.erro) {
+          container.innerHTML = `<div class="ranking-card empty-msg">${dados.erro}</div>`;
+          return;
+        }
+        const { sala, ranking } = dados;
+        const linhas = ranking.length
+          ? ranking.map(a => `
+              <tr class="${a.voce ? 'voce' : ''}">
+                <td class="posicao-medalha">${a.posicao <= 3 ? ['🥇','🥈','🥉'][a.posicao - 1] : a.posicao}</td>
+                <td>${a.nome}${a.voce ? ' <span style="color:var(--clr-purple)">(você)</span>' : ''}</td>
+                <td class="estrelas-cell">⭐ ${a.total_estrelas}</td>
+                <td>Mundo ${a.mundo_atual}</td>
+              </tr>
+            `).join('')
+          : `<tr><td colspan="4" class="empty-msg">Nenhum aluno pontuou nesta sala ainda.</td></tr>`;
+
+        container.innerHTML = `
+          <div class="ranking-card">
+            <div class="ranking-header">
+              <div>
+                <h2>${sala.nome}</h2>
+                <small>Professor(a): ${sala.docente_nome || '—'}</small>
+              </div>
+              <span class="codigo-badge">${sala.codigo}</span>
+            </div>
+            <div class="ranking-table-wrap">
+              <table class="ranking-table">
+                <thead><tr><th>#</th><th>Aluno</th><th>Estrelas</th><th>Progresso</th></tr></thead>
+                <tbody>${linhas}</tbody>
+              </table>
+            </div>
+          </div>`;
+      }
+
+      carregarRanking(salas[0].id);
+    })();
+  </script>
+</body>
+</html>
